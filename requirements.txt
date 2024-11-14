@@ -1,4 +1,4 @@
-git+https://github.com/fabfic/ether.git@master#egg=edgerun-ether
+git+https://github.com/fabfic/ether.git@cloud-edge-policy#egg=edgerun-ether
 edgerun-skippy-core>=0.1.1
 simpy==3.0.11
 scipy==1.7.0

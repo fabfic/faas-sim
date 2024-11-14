@@ -1,10 +1,9 @@
 import logging
-from typing import List, Tuple
+from typing import List
 
 from skippy.core.scheduler import Scheduler
-from skippy.core.priorities import Priority, BalancedResourcePriority, \
-    LatencyAwareImageLocalityPriority, CapabilityPriority, DataLocalityPriority
-from ext.fabfic.priorities import CloudLocalityPriority, EdgeLocalityPriority
+from ext.fabfic.predicates import CheckEdgeNodePred
+from skippy.core.predicates import Predicate, PodFitsResourcesPred, CheckNodeLabelPresencePred
 
 import ext.fabfic.parametrized_sim as param
 from sim.core import Environment
@@ -13,7 +12,7 @@ from sim.faassim import Simulation
 logger = logging.getLogger(__name__)
 
 #Set this flag true to schedule functions in the cloud
-cloud = False
+cloud = True
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -38,19 +37,19 @@ class CustomScheduler:
         logger.info('creating CustomScheduler')
 
         if cloud:
-            priorities: List[Tuple[float, Priority]] = [(1.0, BalancedResourcePriority()),
-                                                        (1.0, LatencyAwareImageLocalityPriority()),
-                                                        (1.0, CloudLocalityPriority()),
-                                                        (1.0, DataLocalityPriority()),
-                                                        (1.0, CapabilityPriority())]
-            return Scheduler(env.cluster,priorities=priorities)
+            predicates: List[Predicate] = [
+                PodFitsResourcesPred(),
+                CheckNodeLabelPresencePred(['data.skippy.io/storage'], False),
+                CheckEdgeNodePred(False)
+            ]
+            return Scheduler(env.cluster, predicates=predicates)
         else:
-            priorities: List[Tuple[float, Priority]] = [(1.0, BalancedResourcePriority()),
-                                                        (1.0, LatencyAwareImageLocalityPriority()),
-                                                        (1.0, EdgeLocalityPriority()),
-                                                        (1.0, DataLocalityPriority()),
-                                                        (1.0, CapabilityPriority())]
-            return Scheduler(env.cluster,priorities=priorities)
+            predicates: List[Predicate] = [
+                PodFitsResourcesPred(),
+                CheckNodeLabelPresencePred(['data.skippy.io/storage'], False),
+                CheckEdgeNodePred(True)
+            ]
+            return Scheduler(env.cluster, predicates=predicates)
 
 
 if __name__ == '__main__':
