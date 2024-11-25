@@ -7,7 +7,7 @@ from skippy.core.model import Pod, Node, Capacity, ImageState
 
 class EdgeLocalityPriority(Priority):
     """
-    LocalityTypePriority prefers nodes that have the locality label 'locality.skippy.io/type': 'edge'
+    EdgeLocalityPriority prefers nodes that have the locality label 'locality.skippy.io/type': 'edge'
     """
 
     def map_node_score(self, context: ClusterContext, pod: Pod, node: Node) -> int:
@@ -24,7 +24,7 @@ class EdgeLocalityPriority(Priority):
 
 class CloudLocalityPriority(Priority):
     """
-    LocalityTypePriority prefers nodes that have the locality label 'locality.skippy.io/type': 'cloud'
+    CloudLocalityPriority prefers nodes that have the locality label 'locality.skippy.io/type': 'cloud'
     """
 
     def map_node_score(self, context: ClusterContext, pod: Pod, node: Node) -> int:
