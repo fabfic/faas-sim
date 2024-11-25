@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 import ether.fabfic.parametrized as scenario
+from ext.fabfic.custom_scheduler import CustomScheduler
 from skippy.core.utils import parse_size_string
 
 from sim import docker
@@ -28,6 +29,10 @@ def main():
 
     # a simulation runs until the benchmark process terminates
     sim = Simulation(topology, benchmark)
+
+    # set cusotm scheduler with cloud/edge locality policy
+    sim.create_scheduler = CustomScheduler.create
+
     sim.run()
 
 
